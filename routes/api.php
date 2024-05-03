@@ -9,6 +9,7 @@ use function Ramsey\Uuid\v1;
 use App\Http\Controllers\ProductApiController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,27 +25,16 @@ Route::get('/user', function (Request $request) {
 //     Route::apiResource('products', ProductApiController::class)->middleware('auth:sanctum');
 // });
 
+Route::prefix('v1')->group(function () {
+    Route::apiResource('users', UserApiController::class)->middleware('auth:sanctum');
+    Route::post('/register', [UserApiController::class, 'createUser']);
+    Route::post('/login', [UserApiController::class, 'loginUser']);
 
-
-Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
-        // Route::get('/welcome', function (Request $request) {
-        //     return 'Stock de produit';
-        // });
-    
-        // Route::get('/users', function (Request $request) {
-        //     $users = User::all();
-        //     return response()->json($users);
-        // }); 
-        // Route::get('/users', function (Request $request) {
-        //     $users = User::all();
-        //     return response()->json($users);
-        // }); 
-        Route::apiResource('users', UserApiController::class);
-        Route::post('/register', [UserApiController::class, 'createUser']);
-        Route::post('/login', [UserApiController::class, 'loginUser']);
-    
-        Route::apiResource('products', ProductApiController::class);
+    Route::apiResource('products', ProductApiController::class)->middleware('auth:sanctum');
+    Route::apiResource('categories', CategoryController::class)->middleware('auth:sanctum');
 });
+
+
 
 
 Route::get('/hello', function () {

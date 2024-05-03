@@ -6,6 +6,8 @@ use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Category;
+
 
 class ProductSeeder extends Seeder
 {
@@ -14,6 +16,12 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Product::factory(20)->create();
+        $categories = Category::all();
+
+        Product::factory(20)->create()->each(function ($products) use ($categories) {
+            $products->categories()->attach(
+                $categories->random(rand(1, 5))->pluck('id')->toArray()
+            );
+        });
     }
 }
